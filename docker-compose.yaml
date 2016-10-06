@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile-php7fpm-grav
+    image: easypath/php7-fpm-grav:latest
+    volumes:
+      - ./site:/webapps/grav
+
+  nginx:
+    depends_on:
+      - php
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx-grav
+    image: easypath/nginx-grav:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/sites-available:/etc/nginx/sites-available
+      - ./site:/webapps/grav
+    links:
+      - php
